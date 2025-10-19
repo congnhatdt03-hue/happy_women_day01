@@ -72,6 +72,7 @@
             gap: 15px;
             max-width: 300px;
             width: 100%;
+            position: relative;
         }
 
         input {
@@ -416,16 +417,19 @@
     </style>
 </head>
 <body>
-    <audio id="bgMusic" loop>
-        <source src="data:audio/mpeg;base64,/+MYxAAAAANIAAAAAExBTUUzLjk4LjIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="audio/mpeg">
-    </audio>
+    <div id="scene"></div>
 
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="https://congnhatdt03-hue.github.io/happy-women-s-day01/Ni%20Ny%20C%20Anh%20Lyrics%20Video.mp3" type="audio/mpeg">
+  Trình duyệt của bạn không hỗ trợ thẻ âm thanh.
+    </audio>
     <!-- Page 1: Nhập mật khẩu -->
     <div id="page1" class="page active">
         <div class="container">
             <h1>Có một món quà đặc biệt dành cho bạn 💕</h1>
             <div class="input-group">
                 <input type="password" id="password" placeholder="Mật khẩu của trái tim 💖" maxlength="10">
+                <span id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #ff69b4;">👁️</span>
                 <button onclick="checkPassword()">Mở quà ✨</button>
             </div>
             <p id="error" class="error hidden">Mật khẩu chưa đúng rồi, thử lại nhé 😘</p>
@@ -487,21 +491,20 @@
     </div>
 
     <script>
-        const CORRECT_PASSWORD = "Doan-xem";
+        const CORRECT_PASSWORD = "doanxem";
         let noClickCount = 0;
         let typingIndex = 0;
         let currentPage = 1;
+        let isPasswordVisible = false;
 
-       const messages = `💖 Chúc bạn ngày lễ vui vẻ, 364 ngày còn lại luôn xinh đẹp, mạnh mẽ và hạnh phúc.
-                        Mong rằng hôm nay và mãi về sau, bạn luôn nở nụ cười thật tươi 💕`;
+        const messages = `💖 Chúc bạn ngày lễ vui vẻ, 364 ngày còn lại luôn xinh đẹp, mạnh mẽ và hạnh phúc. 💕`;
 
         const pages = document.querySelectorAll('.page');
         const passwordInput = document.getElementById('password');
         const errorMsg = document.getElementById('error');
         const typingText = document.getElementById('typingText');
-        const bgMusic = document.getElementById('bgMusic');
-        const btnNo = document.querySelector('.btn-no');
-        const btnYes = document.querySelector('.btn-yes');
+        const bgMusic = document.getElementById('backgroundMusic');
+        const togglePassword = document.getElementById('togglePassword');
 
         function showPage(pageId) {
             pages.forEach(page => page.classList.remove('active'));
@@ -514,9 +517,15 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            playMusic();
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {});
             createFloatingHearts();
             passwordInput.focus();
+            togglePassword.addEventListener('click', () => {
+                isPasswordVisible = !isPasswordVisible;
+                passwordInput.type = isPasswordVisible ? 'text' : 'password';
+                togglePassword.textContent = isPasswordVisible ? '🙈' : '👁️';
+            });
         });
 
         function checkPassword() {
@@ -540,8 +549,8 @@
         function refuseLetter() {
             noClickCount++;
             const scale = Math.max(0.3, 1 - noClickCount * 0.1);
-            btnNo.style.transform = `scale(${scale})`;
-            btnYes.style.transform = `scale(${1.1 + noClickCount * 0.05})`;
+            document.querySelector('.btn-no').style.transform = `scale(${scale})`;
+            document.querySelector('.btn-yes').style.transform = `scale(${1.1 + noClickCount * 0.05})`;
             
             if (noClickCount >= 8) {
                 alert('Thôi được rồi, cậu mở thư đi mà 😘💕');
@@ -556,8 +565,8 @@
 
         function restart() {
             noClickCount = 0;
-            btnNo.style.transform = 'scale(1)';
-            btnYes.style.transform = 'scale(1)';
+            document.querySelector('.btn-no').style.transform = 'scale(1)';
+            document.querySelector('.btn-yes').style.transform = 'scale(1)';
             passwordInput.value = '';
             typingText.innerHTML = '';
             document.getElementById('magicEnvelope').classList.remove('open');
@@ -672,11 +681,6 @@
             }
         }
 
-        function playMusic() {
-            bgMusic.volume = 0.3;
-            bgMusic.play().catch(() => {});
-        }
-
         if (passwordInput) {
             passwordInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') checkPassword();
@@ -685,4 +689,3 @@
     </script>
 </body>
 </html>
-
